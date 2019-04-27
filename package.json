@@ -5,20 +5,33 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:client": "vue-cli-service build",
+    "build:server": "cross-env WEBPACK_TARGET=node vue-cli-service build",
+    "build:win": "npm run build:server && move dist\\vue-ssr-server-bundle.json bundle && npm run build:client && move bundle dist\\vue-ssr-server-bundle.json",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "vue": "^2.6.6"
+    "element-ui": "^2.7.2",
+    "express": "^4.16.4",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vue-server-renderer": "^2.6.10",
+    "vuex": "^3.1.0",
+    "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-service": "^3.5.0",
     "babel-eslint": "^10.0.1",
+    "cross-env": "^5.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
-    "vue-template-compiler": "^2.5.21"
+    "lodash.merge": "^4.6.1",
+    "vue-template-compiler": "^2.5.21",
+    "webpack-node-externals": "^1.7.2"
   },
   "eslintConfig": {
     "root": true,
