@@ -4,13 +4,15 @@ const nodeExternals = require("webpack-node-externals");
 const merge = require("lodash.merge");
 const TARGET_NODE = process.env.WEBPACK_TARGET === "node";
 const target = TARGET_NODE ? "server" : "client";
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   
-
   css:{
-    extract: false
+    extract:false
   },
+
   //设置代理
   devServer: {
     proxy: {
@@ -39,20 +41,14 @@ module.exports = {
     // https://github.com/liady/webpack-node-externals
     // 外置化应用程序依赖模块。可以使服务器构建速度更快，
     // 并生成较小的 bundle 文件。
-    externals: nodeExternals({
+    externals: TARGET_NODE ? nodeExternals({
       // 不要外置化 webpack 需要处理的依赖模块。
       // 你可以在这里添加更多的文件类型。例如，未处理 *.vue 原始文件，
       // 你还应该将修改 `global`（例如 polyfill）的依赖模块列入白名单
       whitelist: [/\.css$/]
-    }),
+    }) : undefined,
     optimization: {
-      splitChunks: {
-        chunks: "async",
-        minSize: 30000,
-        minChunks: 2,
-        maxAsyncRequests: 5,
-        maxInitialRequests: 3
-      }
+      splitChunks: undefined
     },
     plugins: [TARGET_NODE ? new VueSSRServerPlugin() : new VueSSRClientPlugin()]
   }),
@@ -65,7 +61,19 @@ module.exports = {
           optimizeSSR: false
         });
       });
-  }
+  },
+  module:{
+    rules:[
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options:{
+          extractCSS: isProduction
+        }
+      }
+    ]
+  },
+  plugins: isProduction ? [new ExtractTextPlugin({filename:'common.[chunkhash].css'})] : []
 
   //设置代理
   // devServer: {

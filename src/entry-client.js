@@ -8,23 +8,6 @@ if (window.__INITIAL_STATE__) {
 }
 
 
-Vue.mixin({
-  beforeRouteUpdate(to, from, next) {
-    const { asyncData } = this.$options;
-    if (asyncData) {
-      asyncData({
-        store: this.$store,
-        route: to
-      })
-        .then(next)
-        .catch(next);
-    } else {
-      next();
-    }
-  }
-});
-
-
 
 //挂载app实例之前调用 router.onReady
 //是因为路由器需要提前解析路由配置中的异步组件
@@ -36,37 +19,37 @@ router.onReady(() => {
   //to: 即将进入的路由对象
   // from:当前要离开的路由
   // next:Function 下一步
-  router.beforeResolve((to, from, next) => {
-    //目的路由里面的组件
-    const matched = router.getMatchedComponents(to);
-    //上一个路由里的组件
-    const preMatched = router.getMatchedComponents(from);
+  // router.beforeResolve((to, from, next) => {
+  //   //目的路由里面的组件
+  //   const matched = router.getMatchedComponents(to);
+  //   //上一个路由里的组件
+  //   const preMatched = router.getMatchedComponents(from);
 
-    //对比两个路由的组件，找出差异组件
-    let diffed = false;
-    const activated = matched.filter((current, index) => {
-      return diffed || (diffed = (preMatched[index] !== current));
-    });
+  //   //对比两个路由的组件，找出差异组件
+  //   let diffed = false;
+  //   const activated = matched.filter((current, index) => {
+  //     return diffed || (diffed = (preMatched[index] !== current));
+  //   });
 
-    //没有差异组件
-    if (!activated.length) {
-      return next();
-    }
+  //   //没有差异组件
+  //   if (!activated.length) {
+  //     return next();
+  //   }
 
-    //预渲染差异组件
-    Promise.all(
-      activated.map(current => {
-        if (current.asyncData) {
-          return current.asyncData({ store, route: to });
-        }
-      })
-    )
-      .then(() => {
-        next();
-      })
-      .catch(next);
+  //   //预渲染差异组件
+  //   Promise.all(
+  //     activated.map(current => {
+  //       if (current.asyncData) {
+  //         return current.asyncData({ store, route: to });
+  //       }
+  //     })
+  //   )
+  //     .then(() => {
+  //       next();
+  //     })
+  //     .catch(next);
 
-  });
+  // });
 
   //挂载
   app.$mount("#app");
@@ -99,16 +82,16 @@ router.onReady(() => {
 
 
 //在路由update(query或者params更改时)时，我们也需要调用asyncData来预取数据
-// Vue.mixin({
-//   beforeRouteUpdate(to,from,next){
-//     const {asyncData} = this.$options
-//     if(asyncData){
-//       asyncData({
-//         store: this.$store,
-//         route: to
-//       }).then(next).catch(next)
-//     }else{
-//       next()
-//     }
-//   }
-// })
+Vue.mixin({
+  beforeRouteUpdate(to,from,next){
+    const {asyncData} = this.$options
+    if(asyncData){
+      asyncData({
+        store: this.$store,
+        route: to
+      }).then(next).catch(next)
+    }else{
+      next()
+    }
+  }
+})

@@ -27,7 +27,7 @@ server.get("*", (req, res) => {
   
 
   const context = {
-    title: 'ssr',
+    title: ' ',
     url: req.url
   }
 

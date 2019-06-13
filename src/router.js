@@ -40,6 +40,10 @@ export function createRouter(){
         name:'top250',
         component:top250
         // ()=>import('./components/top250.vue')
+      },{
+        pth: '/movieDetails',
+        name:'movieDetails',
+        component: ()=>import('./components/common/movieDetails.vue')
       }
     ]
   })
